@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Admin Login{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <form class="glass-card auth-card" method="POST">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="auth-icon"><i class="fa-solid fa-shield-halved"></i></div>
+    <h2>Admin Login</h2>
+    <p class="auth-sub">Sign in to manage your portfolio content.</p>
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required autofocus>
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary auth-submit"><i class="fa-solid fa-right-to-bracket"></i> Log In</button>
+    <a href="{{ url_for('main.index') }}" class="auth-back">← Back to site</a>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  .auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--gradient-glow), var(--bg-base); padding: 24px; }
+  .auth-card { width: 100%; max-width: 380px; padding: 40px; text-align: center; }
+  .auth-icon { width: 56px; height: 56px; border-radius: 16px; background: var(--gradient-signature); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin: 0 auto 18px; }
+  .auth-card h2 { font-family: var(--font-display); margin-bottom: 6px; }
+  .auth-sub { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 28px; }
+  .auth-card .field { text-align: left; margin-bottom: 18px; }
+  .auth-submit { width: 100%; justify-content: center; margin-top: 6px; }
+  .auth-back { display: inline-block; margin-top: 18px; font-size: 0.82rem; color: var(--text-faint); }
+</style>
+{% endblock %}

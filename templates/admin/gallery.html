@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block title %}Gallery{% endblock %}
+{% block page_title %}Gallery{% endblock %}
+
+{% block admin_content %}
+<form class="glass-card admin-form-card admin-form" method="POST" enctype="multipart/form-data" action="{{ url_for('admin.gallery_save') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="field"><label>Image</label><input type="file" name="image" accept="image/*" required></div>
+  <div class="form-row-2">
+    <div class="field"><label>Caption (optional)</label><input type="text" name="caption"></div>
+    <div class="field"><label>Display Order</label><input type="number" name="display_order" value="0"></div>
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-upload"></i> Add to Gallery</button>
+  </div>
+</form>
+
+<div class="gallery-grid" style="margin-top: 30px;">
+  {% for item in items %}
+  <div class="glass-card" style="padding: 12px;">
+    <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.caption }}" style="width:100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 10px; margin-bottom: 10px;">
+    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px;">{{ item.caption or "—" }}</p>
+    <form method="POST" action="{{ url_for('admin.gallery_delete', item_id=item.id) }}" onsubmit="return confirm('Delete this image?');">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-ghost btn-sm" type="submit" style="width:100%; justify-content:center;"><i class="fa-solid fa-trash"></i> Delete</button>
+    </form>
+  </div>
+  {% else %}
+  <div class="glass-card empty-state" style="grid-column: 1/-1;"><i class="fa-solid fa-images"></i>No gallery images yet.</div>
+  {% endfor %}
+</div>
+{% endblock %}

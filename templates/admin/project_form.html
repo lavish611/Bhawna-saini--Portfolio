@@ -1,0 +1,57 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit Project' if project else 'New Project' }}{% endblock %}
+{% block page_title %}{{ 'Edit Project' if project else 'New Project' }}{% endblock %}
+
+{% block admin_content %}
+<form class="glass-card admin-form-card admin-form" method="POST" enctype="multipart/form-data"
+      action="{{ url_for('admin.projects_save', project_id=project.id) if project else url_for('admin.projects_save') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="field"><label>Title</label><input type="text" name="title" value="{{ project.title if project else '' }}" required></div>
+
+  {% if project %}
+  <div class="field checkbox-row">
+    <input type="checkbox" name="regenerate_slug" id="regenerate_slug">
+    <label for="regenerate_slug" style="margin:0;">Regenerate URL slug from title (current: <code>{{ project.slug }}</code>)</label>
+  </div>
+  {% endif %}
+
+  <div class="field"><label>Short Description (shown on card)</label><input type="text" name="short_description" value="{{ project.short_description if project else '' }}" maxlength="300"></div>
+  <div class="field"><label>Full Description</label><textarea name="description">{{ project.description if project else '' }}</textarea></div>
+
+  <div class="form-row-2">
+    <div class="field"><label>Category</label><input type="text" name="category" value="{{ project.category if project else 'Web' }}" placeholder="e.g. Web, Security, Tool"></div>
+    <div class="field"><label>Tech Stack (comma separated)</label><input type="text" name="tech_stack" value="{{ project.tech_stack if project else '' }}" placeholder="Flask, MySQL, JavaScript"></div>
+  </div>
+
+  <div class="form-row-2">
+    <div class="field"><label>GitHub Link</label><input type="url" name="github_link" value="{{ project.github_link if project else '' }}" placeholder="https://github.com/..."></div>
+    <div class="field"><label>Live Demo Link</label><input type="url" name="live_link" value="{{ project.live_link if project else '' }}" placeholder="https://..."></div>
+  </div>
+
+  <div class="form-row-2">
+    <div class="field">
+      <label>Project Image</label>
+      <input type="file" name="image" accept="image/*">
+      {% if project and project.image %}<div class="current-file-preview"><img src="{{ url_for('static', filename=project.image) }}" alt=""></div>{% endif %}
+    </div>
+    <div class="field">
+      <label>Project Video (optional)</label>
+      <input type="file" name="video" accept="video/*">
+      {% if project and project.video %}<div class="current-file-preview"><i class="fa-solid fa-film"></i> Current video uploaded</div>{% endif %}
+    </div>
+  </div>
+
+  <div class="form-row-2">
+    <div class="field checkbox-row">
+      <input type="checkbox" name="featured" id="featured" {{ 'checked' if project and project.featured }}>
+      <label for="featured" style="margin:0;">Mark as Featured</label>
+    </div>
+    <div class="field"><label>Display Order</label><input type="number" name="display_order" value="{{ project.display_order if project else 0 }}"></div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Project</button>
+    <a href="{{ url_for('admin.projects_list') }}" class="btn btn-ghost">Cancel</a>
+  </div>
+</form>
+{% endblock %}

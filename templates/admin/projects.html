@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block title %}Projects{% endblock %}
+{% block page_title %}Projects{% endblock %}
+{% block page_actions %}<a href="{{ url_for('admin.projects_new_form') }}" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> New Project</a>{% endblock %}
+
+{% block admin_content %}
+<div class="admin-table-wrap">
+  <table class="admin-table">
+    <thead><tr><th>Image</th><th>Title</th><th>Category</th><th>Featured</th><th>Order</th><th></th></tr></thead>
+    <tbody>
+      {% for project in projects %}
+      <tr>
+        <td>{% if project.image %}<img class="thumb" src="{{ url_for('static', filename=project.image) }}" alt="">{% else %}—{% endif %}</td>
+        <td>{{ project.title }}</td>
+        <td>{{ project.category }}</td>
+        <td><span class="badge {{ 'badge-yes' if project.featured else 'badge-no' }}">{{ 'Yes' if project.featured else 'No' }}</span></td>
+        <td>{{ project.display_order }}</td>
+        <td class="table-actions">
+          <a class="icon-btn" href="{{ url_for('admin.projects_edit_form', project_id=project.id) }}"><i class="fa-solid fa-pen"></i></a>
+          <form method="POST" action="{{ url_for('admin.projects_delete', project_id=project.id) }}" onsubmit="return confirm('Delete this project?');">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="icon-btn danger" type="submit"><i class="fa-solid fa-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="empty-state">No projects yet. Click "New Project" to add one.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

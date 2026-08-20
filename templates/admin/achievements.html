@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %}
+{% block title %}Achievements{% endblock %}
+{% block page_title %}Achievements{% endblock %}
+
+{% block admin_content %}
+{% set editing = request.args.get('edit', type=int) %}
+{% set edit_item = achievements|selectattr('id', 'equalto', editing)|first if editing else None %}
+
+<form class="glass-card admin-form-card admin-form" method="POST" enctype="multipart/form-data"
+      action="{{ url_for('admin.achievements_save', ach_id=edit_item.id) if edit_item else url_for('admin.achievements_save') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="field"><label>Title</label><input type="text" name="title" value="{{ edit_item.title if edit_item else '' }}" required></div>
+  <div class="field"><label>Description</label><textarea name="description">{{ edit_item.description if edit_item else '' }}</textarea></div>
+  <div class="form-row-2">
+    <div class="field"><label>Date</label><input type="text" name="date" value="{{ edit_item.date if edit_item else '' }}" placeholder="e.g. Feb 2025"></div>
+    <div class="field"><label>Icon Class</label><input type="text" name="icon_class" value="{{ edit_item.icon_class if edit_item else 'fa-solid fa-trophy' }}"></div>
+  </div>
+  <div class="field">
+    <label>Image (optional)</label>
+    <input type="file" name="image" accept="image/*">
+    {% if edit_item and edit_item.image %}<div class="current-file-preview"><img src="{{ url_for('static', filename=edit_item.image) }}" alt=""></div>{% endif %}
+  </div>
+  <div class="field"><label>Display Order</label><input type="number" name="display_order" value="{{ edit_item.display_order if edit_item else 0 }}"></div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> {{ 'Update' if edit_item else 'Add Achievement' }}</button>
+    {% if edit_item %}<a href="{{ url_for('admin.achievements_list') }}" class="btn btn-ghost">Cancel</a>{% endif %}
+  </div>
+</form>
+
+<div class="admin-table-wrap" style="margin-top: 28px;">
+  <table class="admin-table">
+    <thead><tr><th>Title</th><th>Date</th><th></th></tr></thead>
+    <tbody>
+      {% for item in achievements %}
+      <tr>
+        <td>{{ item.title }}</td>
+        <td>{{ item.date }}</td>
+        <td class="table-actions">
+          <a class="icon-btn" href="{{ url_for('admin.achievements_list', edit=item.id) }}"><i class="fa-solid fa-pen"></i></a>
+          <form method="POST" action="{{ url_for('admin.achievements_delete', ach_id=item.id) }}" onsubmit="return confirm('Delete this achievement?');">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="icon-btn danger" type="submit"><i class="fa-solid fa-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3" class="empty-state">No achievements added yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

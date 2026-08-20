@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block admin_content %}
+<div class="stat-grid">
+  <div class="glass-card stat-card"><div class="num">{{ stats.projects }}</div><div class="label">Projects</div></div>
+  <div class="glass-card stat-card"><div class="num">{{ stats.skills }}</div><div class="label">Skills</div></div>
+  <div class="glass-card stat-card"><div class="num">{{ stats.certificates }}</div><div class="label">Certificates</div></div>
+  <div class="glass-card stat-card"><div class="num">{{ stats.achievements }}</div><div class="label">Achievements</div></div>
+  <div class="glass-card stat-card"><div class="num">{{ stats.services }}</div><div class="label">Services</div></div>
+  <div class="glass-card stat-card"><div class="num">{{ stats.gallery }}</div><div class="label">Gallery Items</div></div>
+  <div class="glass-card stat-card"><div class="num">{{ stats.unread_messages }}</div><div class="label">Unread Messages</div></div>
+</div>
+
+<h2 style="font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 16px;">Recent Messages</h2>
+{% if recent_messages %}
+  {% for msg in recent_messages %}
+  <div class="glass-card msg-card {{ 'unread' if not msg.is_read }}">
+    <div class="msg-head">
+      <strong>{{ msg.name }}</strong>
+      <span class="msg-meta">{{ msg.email }} &middot; {{ msg.created_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+    </div>
+    <div class="msg-body">{{ msg.message[:160] }}{% if msg.message|length > 160 %}…{% endif %}</div>
+  </div>
+  {% endfor %}
+  <a href="{{ url_for('admin.messages_list') }}" class="btn btn-ghost btn-sm">View All Messages</a>
+{% else %}
+  <div class="glass-card empty-state"><i class="fa-solid fa-inbox"></i>No messages yet.</div>
+{% endif %}
+{% endblock %}

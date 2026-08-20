@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+{% block title %}Messages{% endblock %}
+{% block page_title %}Contact Messages{% endblock %}
+
+{% block admin_content %}
+{% for msg in messages %}
+<div class="glass-card msg-card {{ 'unread' if not msg.is_read }}">
+  <div class="msg-head">
+    <strong>{{ msg.name }} {% if not msg.is_read %}<span class="badge badge-yes">New</span>{% endif %}</strong>
+    <span class="msg-meta">{{ msg.email }} &middot; {{ msg.created_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+  </div>
+  {% if msg.subject %}<p style="font-size:0.85rem; color: var(--text-faint); margin-bottom:6px;">Subject: {{ msg.subject }}</p>{% endif %}
+  <div class="msg-body">{{ msg.message }}</div>
+  <div class="table-actions">
+    {% if not msg.is_read %}
+    <form method="POST" action="{{ url_for('admin.messages_mark_read', msg_id=msg.id) }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-ghost btn-sm" type="submit"><i class="fa-solid fa-check"></i> Mark Read</button>
+    </form>
+    {% endif %}
+    <form method="POST" action="{{ url_for('admin.messages_delete', msg_id=msg.id) }}" onsubmit="return confirm('Delete this message?');">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-ghost btn-sm" type="submit"><i class="fa-solid fa-trash"></i> Delete</button>
+    </form>
+  </div>
+</div>
+{% else %}
+<div class="glass-card empty-state"><i class="fa-solid fa-inbox"></i>No messages yet.</div>
+{% endfor %}
+{% endblock %}

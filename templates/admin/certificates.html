@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+{% block title %}Certificates{% endblock %}
+{% block page_title %}Certificates{% endblock %}
+
+{% block admin_content %}
+{% set editing = request.args.get('edit', type=int) %}
+{% set edit_cert = certificates|selectattr('id', 'equalto', editing)|first if editing else None %}
+
+<form class="glass-card admin-form-card admin-form" method="POST" enctype="multipart/form-data"
+      action="{{ url_for('admin.certificates_save', cert_id=edit_cert.id) if edit_cert else url_for('admin.certificates_save') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="field"><label>Title</label><input type="text" name="title" value="{{ edit_cert.title if edit_cert else '' }}" required></div>
+  <div class="form-row-2">
+    <div class="field"><label>Issuer</label><input type="text" name="issuer" value="{{ edit_cert.issuer if edit_cert else '' }}"></div>
+    <div class="field"><label>Issue Date</label><input type="text" name="issue_date" value="{{ edit_cert.issue_date if edit_cert else '' }}" placeholder="e.g. March 2025"></div>
+  </div>
+  <div class="field"><label>Credential Link (optional)</label><input type="url" name="credential_link" value="{{ edit_cert.credential_link if edit_cert else '' }}"></div>
+  <div class="field">
+    <label>Certificate File (image or PDF)</label>
+    <input type="file" name="file" accept="image/*,application/pdf">
+    {% if edit_cert and edit_cert.file %}<div class="current-file-preview"><i class="fa-solid fa-file"></i> Current file uploaded</div>{% endif %}
+  </div>
+  <div class="field"><label>Display Order</label><input type="number" name="display_order" value="{{ edit_cert.display_order if edit_cert else 0 }}"></div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> {{ 'Update Certificate' if edit_cert else 'Add Certificate' }}</button>
+    {% if edit_cert %}<a href="{{ url_for('admin.certificates_list') }}" class="btn btn-ghost">Cancel</a>{% endif %}
+  </div>
+</form>
+
+<div class="admin-table-wrap" style="margin-top: 28px;">
+  <table class="admin-table">
+    <thead><tr><th>Title</th><th>Issuer</th><th>Date</th><th></th></tr></thead>
+    <tbody>
+      {% for cert in certificates %}
+      <tr>
+        <td>{{ cert.title }}</td>
+        <td>{{ cert.issuer }}</td>
+        <td>{{ cert.issue_date }}</td>
+        <td class="table-actions">
+          <a class="icon-btn" href="{{ url_for('admin.certificates_list', edit=cert.id) }}"><i class="fa-solid fa-pen"></i></a>
+          <form method="POST" action="{{ url_for('admin.certificates_delete', cert_id=cert.id) }}" onsubmit="return confirm('Delete this certificate?');">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="icon-btn danger" type="submit"><i class="fa-solid fa-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" class="empty-state">No certificates added yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
