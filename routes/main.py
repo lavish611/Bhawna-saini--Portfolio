@@ -8,6 +8,7 @@ from models import (
     Profile, Skill, Project, Certificate, Achievement,
     Service, GalleryItem, SocialLink, ContactMessage
 )
+from kafka_config import send_kafka_event
 
 main_bp = Blueprint("main", __name__)
 
@@ -65,6 +66,12 @@ def contact():
     entry = ContactMessage(name=name, email=email, subject=subject, message=message)
     db.session.add(entry)
     db.session.commit()
+    try:
+        send_kafka_event(
+            f"New contact message from {name} ({email}): {subject}"
+        )
+    except Exception as e:
+        print(f"Kafka event failed: {e}")
 
     flash("Thanks for reaching out! I'll get back to you soon.", "success")
     return redirect(url_for("main.index") + "#contact")
