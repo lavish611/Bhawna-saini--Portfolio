@@ -10,12 +10,9 @@ class Config:
 
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-key-change-me")
 
-    # ---- Database ----
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL",
-        "sqlite:///" + os.path.join(basedir, "portfolio.db")
-    )
-
+    # ---- PostgreSQL Database ----
+    DATABASE_URL = os.environ.get("DATABASE_URL")
+    SQLALCHEMY_DATABASE_URI = DATABASE_URL
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # ---- Admin bootstrap ----
