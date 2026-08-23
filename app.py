@@ -1,4 +1,5 @@
 from flask import Flask
+import cloudinary
 from config import Config
 from extensions import db, login_manager, csrf
 from models import Admin, Profile, Skill, Service, SocialLink, Project, Certificate, Achievement, GalleryItem
@@ -8,7 +9,13 @@ from utils import unique_slug
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
-    
+    # ---- Cloudinary ----
+    cloudinary.config(
+        cloud_name=app.config["CLOUDINARY_CLOUD_NAME"],
+        api_key=app.config["CLOUDINARY_API_KEY"],
+        api_secret=app.config["CLOUDINARY_API_SECRET"],
+        secure=True
+    )
 
     # ---- Extensions ----
     db.init_app(app)

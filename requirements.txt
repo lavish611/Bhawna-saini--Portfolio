@@ -9,3 +9,4 @@ email-validator==2.2.0
 Pillow>=11.3.0
 kafka-python
 gunicorn
+cloudinary==1.46.0
