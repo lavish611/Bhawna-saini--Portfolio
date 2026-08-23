@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, url_for
 import cloudinary
 from config import Config
 from extensions import db, login_manager, csrf
@@ -9,6 +9,16 @@ from utils import unique_slug
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+     @app.template_filter("media_url")
+    def media_url(path):
+        if not path:
+            return ""
+
+        if path.startswith(("http://", "https://")):
+            return path
+
+        return url_for("static", filename=path)
+
     # ---- Cloudinary ----
     cloudinary.config(
         cloud_name=app.config["CLOUDINARY_CLOUD_NAME"],

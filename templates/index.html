@@ -41,7 +41,7 @@
     <div class="hero-visual">
       <div class="hero-photo-frame" data-aos="fade-left">
         {% if profile and profile.profile_image %}
-        <img src="{{ url_for('static', filename=profile.profile_image) }}" alt="{{ profile.full_name }}">
+        <img src="{{ profile.profile_image|media_url }}" alt="{{ profile.full_name }}">
         {% else %}
         <img src="{{ url_for('static', filename='img/profile.jpg') }}" alt="Profile photo">
         {% endif %}
@@ -144,7 +144,7 @@
         <div class="project-media">
           {% if project.featured %}<span class="project-featured-tag">Featured</span>{% endif %}
           {% if project.image %}
-          <img src="{{ url_for('static', filename=project.image) }}" alt="{{ project.title }}">
+          <img src="{{ project.image|media_url }}" alt="{{ project.title }}">
           {% else %}
           <img src="https://placehold.co/600x400/12131F/9096B3?text={{ project.title|urlencode }}" alt="{{ project.title }}">
           {% endif %}
@@ -188,7 +188,7 @@
           <div class="cert-issuer">{{ cert.issuer }}</div>
           <div class="cert-date">{{ cert.issue_date }}</div>
           {% if cert.credential_link %}<a class="cert-link" href="{{ cert.credential_link }}" target="_blank" rel="noopener">View credential →</a>
-          {% elif cert.file %}<a class="cert-link" href="{{ url_for('static', filename=cert.file) }}" target="_blank" rel="noopener">View certificate →</a>{% endif %}
+          {% elif cert.file %}<a class="cert-link" href="{{ cert.file|media_url }}" target="_blank" rel="noopener">View certificate →</a>{% endif %}
         </div>
       </div>
       {% else %}
@@ -231,7 +231,7 @@
     <div class="gallery-grid">
       {% for item in gallery %}
       <div class="gallery-item" data-aos="zoom-in">
-        <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.caption }}">
+        <img src="{{ item.image|media_url }}" alt="{{ item.caption }}">
         {% if item.caption %}<div class="gallery-caption">{{ item.caption }}</div>{% endif %}
       </div>
       {% endfor %}
