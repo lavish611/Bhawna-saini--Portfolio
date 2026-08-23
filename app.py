@@ -9,7 +9,8 @@ from utils import unique_slug
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
-     @app.template_filter("media_url")
+
+    @app.template_filter("media_url")
     def media_url(path):
         if not path:
             return ""
@@ -18,7 +19,6 @@ def create_app(config_class=Config):
             return path
 
         return url_for("static", filename=path)
-
     # ---- Cloudinary ----
     cloudinary.config(
         cloud_name=app.config["CLOUDINARY_CLOUD_NAME"],
